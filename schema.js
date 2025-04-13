@@ -9,7 +9,7 @@ module.exports.listingSchema = Joi.object({
         country:Joi.string().required(),
         price:Joi.number().required().min(0),
         image:Joi.string().allow("",null),
-        category:Joi.array().items(Joi.string().valid("House","Cottage","Flats","Rooms","Hotels","Iconic cities","Mountains","Castles","Amazing pools","Camping")).required(),
+        category:Joi.array().items(Joi.string().valid("House","Cottage","Flats","Rooms","Hotels","Iconic cities","Mountains","Castles","Beachfront","Amazing pools","Camping")).required(),
     }).required()
 })
 
