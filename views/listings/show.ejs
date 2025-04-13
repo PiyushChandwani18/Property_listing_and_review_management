@@ -1,0 +1,144 @@
+<% layout("/layouts/boilerplate.ejs") %>
+<div class="row mt-3">
+    <div class="col-md-6 col-9  offset-md-3 offset-1">
+        <h3><%= specificListing.title %></h3>
+    </div>
+
+    <div class="listing-card col-md-6 col-9  offset-md-3 offset-1 show-card">
+        <img src="<%= specificListing.image.url %>" class="card-img-top show-image" alt="listing_image">
+        <div class="card-body">
+            <p class="card-text">Owned by <i><%= specificListing.owner.username %></i></p>
+            <p class="card-text"><%= specificListing.description %></p>
+            <p class="card-text">&#8377;<%= specificListing.price.toLocaleString("en-IN") %>/night</p>
+            <p class="card-text"><%= specificListing.location.address %></p>
+            <p class="card-text"><%= specificListing.location.city %></p>
+            <p class="card-text"><%= specificListing.country %></p>
+        </div>
+    </div>
+
+    <% if (currentUser && currentUser._id.equals(specificListing.owner._id)) { %>
+
+        <div class="btns col-md-6 col-9  offset-md-3 offset-1">
+            <form action="/listings/<%= specificListing._id %>/edit" method="get">
+                <button class="btn btn-dark mb-3 edit-btn ">Edit</button>
+            </form>
+            
+            <form action="/listings/<%= specificListing._id %>?_method=delete" method="post">
+                <button class="btn btn-dark mb-3 ">Delete</button>
+            </form>
+        </div>
+    <% } %>
+
+    <hr class=" col-md-6 col-9  offset-md-3 offset-1">
+
+    <!--Map section-->
+    <div class=" col-md-6 col-9  offset-md-3 offset-1 mb-3">
+        <h2>Where you'll be</h2>
+        <% if (specificListing.location && specificListing.location.lat && specificListing.location.lng) { %>
+            <div id="map" style="height: 50vh; width: 100%;"></div>
+        <% } else { %>
+            <p class="text-danger">Map location is not available for this listing.</p>
+        <% } %>
+
+        <% if (process.env.MAP_API_KEY) { %>
+            <script>
+                window.initMap = function () {
+                    let location = { 
+                        lat: <%= specificListing.location.lat %>,
+                        lng: <%= specificListing.location.lng %>
+                    };
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        zoom: 12,
+                        center: location,
+                    });
+                    new google.maps.Marker({
+                        position: location,
+                        map: map,
+                    });
+                };
+        
+                // Dynamically load the Google Maps script
+                function loadMapScript() {
+                    const script = document.createElement("script");
+                    script.src = "https://maps.googleapis.com/maps/api/js?key=<%= process.env.MAP_API_KEY %>&callback=initMap";
+                    script.async = true;
+                    script.defer = true;
+                    document.head.appendChild(script); // Append the script to the document
+                }
+        
+                window.addEventListener("DOMContentLoaded", loadMapScript);
+            </script>
+        <% } else { %>
+            <script>
+                console.error('Google Maps API key is missing. Please set MAP_API_KEY in your environment variables.');
+            </script>
+        <% } %>
+    </div>
+    
+
+    <!--   Review form Section    -->
+    
+    <div class="col-md-6 col-9  offset-md-3 offset-1 mb-3">
+        <% if (currentUser) { %>
+        <hr>
+        <h4>Leave a Review</h4>
+        <form action="/listings/<%= specificListing._id %>/reviews" method="post" novalidate class="needs-validation">
+            <div class="mb-3 mt-3">
+                <label for="rating" class="form-label">Rating</label>
+                <fieldset class="starability-slot">
+                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+                    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                    <label for="first-rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                    <label for="first-rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                    <label for="first-rate3" title="Average">3 stars</label>
+                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                    <label for="first-rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                    <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
+            </div>
+
+            <div class="mb-3 mt-3">
+                <label for="comment" class="form-label">Comment</label>
+                <textarea name="review[comment]" cols="30" rows="5" id="comment" class="form-control" required></textarea>
+                <div class="invalid-feedback">Please add some comments for review</div>
+            </div>
+            <button class="btn btn-outline-dark">Submit</button>
+        </form>
+        <% } %>
+    </div>   
+
+    <!-- ALL review section -->
+    <div class="col-md-6 col-9  offset-md-3 offset-1 mb-3">
+
+        <% if (specificListing.reviews.length>0) { %>
+            <hr>
+            <p><b>All reviews</b></p>
+         
+        <% } %>
+        
+
+        <div class="row row-cols-md-2  mt-3 " >
+            <% for (review of specificListing.reviews) { %>
+                <div class="card mb-3" >
+                    <div class="card-body">
+                        <h5 class="card-title">@<%= review.author.username %></h5>
+                        <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
+                        <p class="card-text"><%= review.comment %></p>
+                        <p class="card-text"><%= review.createdAt.toString().split(" ").slice(0,4).join(" ") %></p>
+                    </div>
+                    <% if(review.author.equals(currentUser)) {%>
+                    <form action="/listings/<%= specificListing._id %>/reviews/<%= review._id %>?_method=DELETE" method="post" class="mb-2 mt-2">
+                        <button class="btn btn-sm btn-dark">delete</button>
+                    </form>
+                    <% } %>
+                    
+
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,49 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+    <!-- Hero Section -->
+
+      <div class="row  ms-4 me-3 mt-4 home-container-image" style="height: 60vh;">
+        <div class="home-container-content ">
+            <h1 class="display-4">Find Your Perfect Stay</h1>
+            <p class="lead">Discover amazing properties, read reviews, and book your next adventure.</p>
+            <a href="/listings" class="btn btn-lg mt-3" style="background-color: rgb(255, 0, 0); color:#fff;">Browse Properties</a>
+        </div>
+
+      </div>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <i class="fa-solid fa-house fa-3x text-primary mb-3"></i>
+                    <h3>Wide Range of Properties</h3>
+                    <p>Explore houses, cottages, beachfront properties, and more.</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fa-solid fa-star fa-3x text-primary mb-3"></i>
+                    <h3>Trusted Reviews</h3>
+                    <p>Read reviews from verified users to make informed decisions.</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fa-solid fa-map-marker-alt fa-3x text-primary mb-3"></i>
+                    <h3>Location-Based Search</h3>
+                    <p>Find properties near your favorite destinations with ease.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+
+    <% if (!currentUser) { %>
+      <section class=" py-5 text-center">
+        <div class="container">
+            <h2>Ready to Start Your Journey?</h2>
+            <p class="lead">Sign up now and explore the best properties around the world.</p>
+            <a href="/signup" class="btn  btn-lg" style="background-color: rgb(255, 0, 0) ; color: #ffffff;">Get Started</a>
+        </div>
+    </section>
+     
+    <% } %>
+    

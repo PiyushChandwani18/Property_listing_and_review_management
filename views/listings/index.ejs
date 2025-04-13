@@ -1,0 +1,158 @@
+<% layout("/layouts/boilerplate.ejs") -%>
+
+<style>
+
+#filters{
+    display: flex;
+    flex-wrap:wrap;
+    align-items: center;
+
+}
+
+.filter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 2rem;
+    height: 3rem;
+    width: 5.55rem;
+    opacity: 0.75;
+    
+}
+.filter p{
+    font-size: 0.8rem;
+}
+.filter:hover{
+    opacity: 1;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+.tax-info{
+    display: none;
+}
+.tax-toggle{
+    border: 1px solid black;
+    border-radius: 1rem;
+    height: 3.25rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+</style>
+
+     <div id="filters" >
+        
+        <div class="filter" onclick="applyFilter('House')">
+            <div><i class="fa-solid fa-house"></i></div>
+            <p>House</p>
+        </div>
+
+        <div class="filter" onclick="applyFilter('Cottage')">
+            <div><i class="fa-solid fa-tree"></i></div>
+            <p>Cottages</p>
+        </div>
+
+        <div class="filter" onclick="applyFilter('Flats')">
+            <div><i class="fa-solid fa-building"></i></div>
+            <p>Flats</p>
+        </div>
+
+        
+        <div class="filter" onclick="applyFilter('Rooms')">
+            <div><i class="fa-solid fa-bed"></i></div>
+            <p>Rooms</p>
+        </div>
+
+        <div class="filter" onclick="applyFilter('Hotels')">
+            <div><i class="fa-solid fa-hotel"></i></div>
+            <p>Hotels</p>
+        </div>
+
+        <div class="filter" onclick="applyFilter('Iconic cities')">
+            <div><i class="fa-solid fa-mountain-city"></i></div>
+            <p>Iconic cities</p>
+        </div>
+
+        <div class="filter" onclick="applyFilter('Mountains')">
+            <div><i class="fa-solid fa-mountain"></i></div>
+            <p>Mountains</p>
+        </div>
+
+        <div class="filter" onclick="applyFilter('Castles')">
+            <div><i class="fa-brands fa-fort-awesome"></i></div>
+            <p>Castles</p>
+        </div>
+
+        <div class="filter" onclick="applyFilter('Beachfront')">
+            <div><i class="fa-solid fa-umbrella-beach"></i></div>
+            <p>Beachfront</p>
+        </div>
+        
+        <div class="filter" onclick="applyFilter('Amazing pools')">
+            <div><i class="fa-solid fa-person-swimming"></i></div>
+            <p>Amazing pools</p>
+        </div>
+
+        <div class="filter" onclick="applyFilter('Camping')">
+            <div><i class="fa-solid fa-campground"></i></div>
+            <p>Camping</p>
+        </div>
+
+        <div class="tax-toggle ms-lg-auto">
+            <div class="form-check form-switch form-check-reverse">
+            <input class="form-check-input" type="checkbox" id="switchCheckReverse">
+            <label class="form-check-label" for="switchCheckReverse">Display total after Taxes</label>
+            </div>
+        </div>
+
+        
+     </div>
+
+
+    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-xs-1 mt-3">
+        <% if (allListings.length>0) { %>
+            <% for( listing of allListings) { %>
+                <a href="/listings/<%= listing._id %>" class="listing-link">
+                    <div class="card col listing-card" >
+                        <img src="<%= listing.image.url %>" class="card-img-top"  alt="listing_image" style="height: 20rem;">
+                        <div class="card-img-overlay"></div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <b><%= listing.title %></b>
+                                <br>
+                                &#8377;<%= listing.price.toLocaleString("en-IN") %>/night
+                                <i class="tax-info">&nbsp; + &nbsp; 18% GST</i>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            <% } %>
+        <% } else { %>
+            <div class="col-md-12 col-8 offset-md-4 offset-2 text-center mt-5">
+                <h4 ><i class="fa-sharp fa-solid fa-circle-exclamation" style="color: rgb(255, 0, 0);"></i> No such listings found</h4>
+            </div>
+        <% } %>
+    </div>
+    
+
+<script>
+    function applyFilter(category) {
+        window.location.href = `/listings?search=<%= search %>&category=${category}`;
+    }
+</script>
+
+<script>
+    let taxSwitch=document.getElementById("switchCheckReverse");
+    taxSwitch.addEventListener("click",()=>{
+        let taxInfo=document.querySelectorAll(".tax-info");
+        for (info of taxInfo) {
+            if (taxSwitch.checked) {
+                info.style.display="inline";
+            } else {
+                info.style.display="none";
+            }
+        }
+    })
+</script>
