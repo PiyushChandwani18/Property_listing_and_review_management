@@ -9,7 +9,7 @@ module.exports.index=async (req,res)=>{
     if (search) {
         filter.$or = [
             {   title: { $regex: search, $options: 'i' } },   // Case-insensitive search
-            {   location:{city: { $regex: search, $options: 'i' } }},    // Case-insensitive search
+            {   'location.city': { $regex: search, $options: 'i' } },    // Case-insensitive search
             {   country: { $regex: search, $options: 'i' } },    // Case-insensitive search
             {   category: { $regex: search, $options: 'i' } }  // Case-insensitive search
         ];
